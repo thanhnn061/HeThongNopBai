@@ -1,0 +1,10 @@
+.upload-sv .form-horizontal .form-group .col-sm-10 .select {
+	font-size: 15px;
+    width: 34%;
+    height: 38px;
+    padding: 10px;
+    border-radius: 4px;
+}
+.upload-sv h2 {
+	text-align: center;
+}

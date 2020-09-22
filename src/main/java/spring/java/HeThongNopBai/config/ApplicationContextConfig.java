@@ -20,10 +20,16 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import spring.java.HeThongNopBai.dao.GiangVienDao;
+import spring.java.HeThongNopBai.dao.LopHocPhanDao;
+import spring.java.HeThongNopBai.dao.MonHocDao;
+import spring.java.HeThongNopBai.dao.SinhVienDao;
 import spring.java.HeThongNopBai.dao.TaiKhoanDao;
+import spring.java.HeThongNopBai.dao.impl.GiangVienDaoImpl;
+import spring.java.HeThongNopBai.dao.impl.LopHocPhanDaoImpl;
+import spring.java.HeThongNopBai.dao.impl.MonHocDaoImpl;
+import spring.java.HeThongNopBai.dao.impl.SinhVienDaoImpl;
 import spring.java.HeThongNopBai.dao.impl.TaiKhoanDaoImpl;
-
-
 
 @Configuration
 @ComponentScan("spring.java.HeThongNopBai.*")
@@ -38,15 +44,16 @@ public class ApplicationContextConfig {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+
 	@Bean(name = "multipartResolver")
 	public MultipartResolver getMultipartResolver() {
 		CommonsMultipartResolver resover = new CommonsMultipartResolver();
-		// 1MB
-		resover.setMaxUploadSize(1 * 1024 * 1024);
+		// 30MB
+		resover.setMaxUploadSize(30 * 1024 * 1024);
 
 		return resover;
 	}
-	
+
 	@Autowired
 	private Environment env;
 
@@ -91,7 +98,6 @@ public class ApplicationContextConfig {
 	}
 
 	// Load property in message/validator.properties
-
 	@Bean
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
@@ -99,9 +105,30 @@ public class ApplicationContextConfig {
 		rb.setBasenames(new String[] { "messages/validator" });
 		return rb;
 	}
+
 	@Bean(name = "login")
 	public TaiKhoanDao check() {
 		return new TaiKhoanDaoImpl();
 	}
 
+	@Bean(name = "monhoc")
+	public MonHocDao XemMonHoc() {
+		return new MonHocDaoImpl();
 	}
+
+	@Bean(name = "giangvien")
+	public GiangVienDao xemGiangVien() {
+		return new GiangVienDaoImpl();
+	}
+
+	@Bean(name = "lophocphan")
+	public LopHocPhanDao xemLopHocPhan() {
+		return new LopHocPhanDaoImpl();
+	}
+
+	@Bean(name = "sinhvien")
+	public SinhVienDao xemSinhVien() {
+		return new SinhVienDaoImpl();
+	
+	}
+}
