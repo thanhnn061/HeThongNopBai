@@ -56,13 +56,13 @@ public class HomeController {
 		
 	}
 	@RequestMapping(value = "/nopbaisv/uploadFile", method = RequestMethod.POST)
-	public String uploadFile(UpLoad myFile, Model model,@ModelAttribute("LopHocPhanInfo") LopHocPhanInfo lHP) {
+	public String uploadFile(Model model,@ModelAttribute("nopBai") UpLoad myFile) {
 		model.addAttribute("message", "Upload success");
 		try {
 			MultipartFile multipartFile = myFile.getMultipartFile();
 			String fileName = multipartFile.getOriginalFilename();
-			LopHocPhanInfo lophocphan = lophpDao.xemLHP(lHP.getMalopHP());
-			File file = new File(lophocphan.getLinknopBai(), fileName);
+			LopHocPhanInfo lophocphan = lophpDao.xemLHP(myFile.getMalopHP());
+			File file = new File(""+lophocphan.getLinknopBai(), fileName);
 			multipartFile.transferTo(file);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,13 +71,13 @@ public class HomeController {
 		return "redirect:/nopbaisv";
 	}
 
-	public File getFolderUpload() {
-	    File folderUpload = new File(System.getProperty("user.home") + "/Uploads");
-	    if (!folderUpload.exists()) {
-	      folderUpload.mkdirs();
-	    }
-	    return folderUpload;
-	  }
+//	public File getFolderUpload() {
+//	    File folderUpload = new File(System.getProperty("user.home") + "/Uploads");
+//	    if (!folderUpload.exists()) {
+//	      folderUpload.mkdirs();
+//	    }
+//	    return folderUpload;
+//	  }
 	
 	//login
 	@RequestMapping(value = "/login", method = RequestMethod.POST)

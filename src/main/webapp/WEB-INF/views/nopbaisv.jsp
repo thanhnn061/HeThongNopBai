@@ -71,30 +71,29 @@ form {
 			alert(${message});
 		</script>
 	<div class="upload-form">
-
-		<form:form modelAttribute="LopHocPhanInfo" class="form-horizontal"
-			method="POST" action="nopbaisv/uploadFile"
-			enctype="multipart/form-data" modelAttribute="nopBai">
+	
+		<form:form class="form-horizontal" method="POST"
+			action="${pageContext.request.contextPath}/nopbaisv/uploadFile" enctype="multipart/form-data"
+			modelAttribute="nopBai">
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="namhoc">Năm học:</label>
 				<div class="col-sm-10">
-					<div style="display: none"></div>
-					<form:select path="namHoc" class="select" id="select-namhoc">
-						<form:options itemLabel="2016-2017" itemValue="2016-2017" />
-						<form:options itemLabel="2017-2018" itemValue="2017-2018" />
-						<form:options itemLabel="2018-2019" itemValue="2018-2019" />
-						<form:options itemLabel="2019-2020" itemValue="2019-2020" />
-					</form:select>
+					<select class="select" id="select-namhoc">
+						<option>2016-2017</option>
+						<option>2017-2018</option>
+						<option>2018-2019</option>
+						<option>2019-2020</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="hocky">Học kỳ:</label>
 				<div class="col-sm-10">
-					<form:select path="namHoc" class="select" id="select-namhoc">
-						<form:options itemLabel="Học kỳ 1" itemValue="HK1" />
-						<form:options itemLabel="Học kỳ 2" itemValue="HK2" />
-						<form:options itemLabel="Học kỳ 3" itemValue="HK3" />
-					</form:select>
+					<select class="select" id="select-hocky">
+						<option>Học kỳ 1</option>
+						<option>Học kỳ 2</option>
+						<option>Học kỳ 3</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
@@ -118,9 +117,8 @@ form {
 				<label class="control-label col-sm-2" for="lophocphan">Lớp
 					học phần:</label>
 				<div class="col-sm-10">
-					<form:select path="malopHP" class="select" id="select-lopHP">
-						<form:options items="${loadlophp}" itemLabel="tenLHP"
-							itemValue="malopHP" />
+				<form:select path="malopHP" class="select" id="select-lopHP">
+						<form:options items="${loadlophp}" itemLabel="tenLHP" itemValue="malopHP" />
 					</form:select>
 				</div>
 			</div>

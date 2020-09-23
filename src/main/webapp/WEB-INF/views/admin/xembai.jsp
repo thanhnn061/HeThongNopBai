@@ -110,7 +110,8 @@
 												<button class="btn btn-primary btn-mini">Xóa</button>
 												<button class="btn btn-primary btn-mini">Sửa</button>
 												<a href="${pageContext.request.contextPath}/admin/xembai/${l.malopHP }"><button class="btn btn-primary btn-mini">Tạo Thư Mục</button></a>
-												<button class="btn btn-primary btn-mini">Lấy Bài</button></td>
+												<a href="${pageContext.request.contextPath}/admin/xembai/taifile/${l.malopHP }"><button class="btn btn-primary btn-mini">Lấy Bài</button></a></td>
+												
 										</tr>
 									</c:forEach>
 								</tbody>

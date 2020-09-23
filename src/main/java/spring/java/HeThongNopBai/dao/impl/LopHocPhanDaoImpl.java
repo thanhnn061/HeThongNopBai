@@ -65,7 +65,7 @@ public class LopHocPhanDaoImpl implements LopHocPhanDao {
 		Session session = sessionfactory.getCurrentSession();
 		String sql = " Select new " + LopHocPhanInfo.class.getName()
 				+ "(l.malopHP, l.maGV, l.maSV, l.maMH, l.namHoc, l.hocKy,l.soBN, l.tenLHP, l.linknopBai)" + " from "
-				+ LopHocPhan.class.getName() + " l "+ "l.malopHP=: maLHP" ;
+				+ LopHocPhan.class.getName() + " l "+ "where l.malopHP=: maLHP" ;
 		Query query = session.createQuery(sql);
 		query.setParameter("maLHP", maLHP);
 		return (LopHocPhanInfo)query.uniqueResult();

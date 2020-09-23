@@ -1,15 +1,28 @@
 package spring.java.HeThongNopBai.controller.admin;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +53,8 @@ public class HomeControllerAdmin {
 	private SinhVienDao sinhvienDao;
 	@Autowired
 	private TaiKhoanDao taikhoanDao;
+	@Autowired
+	private ServletContext context;
 
 	@RequestMapping("/admin")
 	public String index(Model model) {
@@ -174,6 +189,7 @@ public class HomeControllerAdmin {
 		model.addAttribute("sinhVienInfo", sinhVienInfo);
 		return "admin/themsv";
 	}
+
 	// xóa sinh viên
 	@RequestMapping(value = "/admin/xoasinhvien")
 	public String deleteSinhVien(Model model, HttpServletRequest request, HttpSession session) {
@@ -182,6 +198,7 @@ public class HomeControllerAdmin {
 		return "redirect:/admin/qlsv";
 
 	}
+
 	// quản lý tài khoản
 	@RequestMapping(value = "/admin/qltk")
 	public String qltk(Model model) {
@@ -190,16 +207,82 @@ public class HomeControllerAdmin {
 		return "/admin/quanlytaikhoan";
 
 	}
+
 	@RequestMapping(value = "/admin/xembai/{maLHP}")
 	public String taoThuMucNopBai(@PathVariable("maLHP") int maLHP, Model model, HttpServletRequest request) {
 		ThongTinInfo lophocphan = lophocphanDao.xemThongTinBT(maLHP);
-		File dir = new File("D:KiemTra/"+lophocphan.getTenLHP());
+		File dir = new File("D:KiemTra/" + lophocphan.getTenLHP());
 		if (dir.mkdir()) {
-			LopHocPhanInfo lhpi=new LopHocPhanInfo(lophocphan.getMalopHP(),lophocphan.getMaGV(),lophocphan.getMaSV(),lophocphan.getMaMH(),lophocphan.getNamHoc(),lophocphan.getHocKy(),lophocphan.getSoBN(),lophocphan.getTenLHP(),dir.getAbsolutePath());
+			LopHocPhanInfo lhpi = new LopHocPhanInfo(lophocphan.getMalopHP(), lophocphan.getMaGV(),
+			lophocphan.getMaSV(), lophocphan.getMaMH(), lophocphan.getNamHoc(), lophocphan.getHocKy(),
+			lophocphan.getSoBN(), lophocphan.getTenLHP(), dir.getAbsolutePath());
 			lophocphanDao.updateLHP(lhpi);
 		}
 		return "redirect:/admin";
 
 	}
-	
+
+	@RequestMapping(value = "/admin/xembai/taifile/{maLHP}")
+	public String taiFile(@PathVariable("maLHP") int maLHP, Model model, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		LopHocPhanInfo lophocphan = lophocphanDao.xemLHP(maLHP);
+		File inputFile = new File(lophocphan.getLinknopBai());
+		String zipFilePath = lophocphan.getLinknopBai() + ".zip";
+		zipFile(inputFile, zipFilePath);
+		try {
+			File file = new File(context.getRealPath(zipFilePath));
+			byte[] data = FileUtils.readFileToByteArray(file);
+			// Thiết lập thông tin trả về
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
+			response.setContentLength(data.length);
+			InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(data));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return "redirect:/admin";
+
+	}
+
+	private static void zipFile(File inputFile, String zipFilePath) throws IOException {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zipos = null;
+
+		try {
+			fos = new FileOutputStream(zipFilePath);
+			zipos = new ZipOutputStream(fos);
+
+			ZipEntry zipEntry = new ZipEntry(inputFile.getName());
+			zipos.putNextEntry(zipEntry);
+
+			fis = new FileInputStream(inputFile);
+			byte[] buf = new byte[1024];
+			int length;
+			while ((length = fis.read(buf)) > 0) {
+				zipos.write(buf, 0, length);
+			}
+			System.out.println("File " + inputFile + " da duoc zip thanh file " + zipFilePath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (zipos != null) {
+				// close ZipEntry
+				zipos.closeEntry();
+				// close ZipOutputStream
+				zipos.close();
+			}
+			// close FileOutputStream
+			if (fos != null)
+				fos.close();
+			// close FileInputStream
+			if (fis != null)
+				fis.close();
+		}
+	}
+
 }
